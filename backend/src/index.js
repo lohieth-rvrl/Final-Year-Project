@@ -1,15 +1,17 @@
-const express = require('express');
-const dotenv = require('dotenv').config();
-const connectDB = require('./config/dbConnect');
-const authRoutes = require('./routes/authRoutes');
-const userRoutes =require('./routes/userRoutes');
+import dotenv from 'dotenv';
+import express, { json } from 'express';
+import connectDB from './config/dbConnect.js';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+
+dotenv.config();
 
 // database
 connectDB();
 
 const app = express();
 // middleware
-app.use(express.json());
+app.use(json());
 
 // routes
 app.use('/api/auth', authRoutes);
