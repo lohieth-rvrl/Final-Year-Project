@@ -29,9 +29,13 @@ import {authrizeRoles} from '../middlewares/roleMiddleware.js';
 const { verifyToken, verifyRole } = authMiddleware;
 
 // User access
-router.get('/user', verifyToken, authrizeRoles('user', 'admin', 'tester'), (req, res) => {
+router.get('/user', verifyToken, authrizeRoles('user', 'admin', 'tester', 'instructor'), (req, res) => {
     res.status(200).json({ message: 'User access granted' });
 }); 
+// Instructor access
+router.get('/instructor', verifyToken, authrizeRoles('instructor',"admin", "tester"), (req, res) => {
+    res.status(200).json({ message: 'Instructor access granted' });
+});
 // Admin access
 router.get('/admin', verifyToken, authrizeRoles('admin', 'tester'), (req, res) => {
     res.status(200).json({ message: 'Admin access granted' });
