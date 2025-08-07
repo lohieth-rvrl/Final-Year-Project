@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { AddCourse } from '../ManageCourses/AddCourse';
+import { CourseList } from '../ManageCourses/CourseList';
 
 export const Admin = () => {
     const [activeTab, setActiveTab] = useState('dashboard')
@@ -10,15 +11,6 @@ export const Admin = () => {
         localStorage.removeItem("role");
         window.location.href = "/"; // Redirect to login page
     }
-
-    const courseList = [
-        { name: "React & Redux Complete Course 2024", students: 1, revenue: "$100" },
-        { name: "Next JS Full Course 2025", students: 1, revenue: "$100" },
-        { name: "CSS Full Course 2025", students: 2, revenue: "$40" },
-        { name: "Python full course 2025", students: 1, revenue: "$500" },
-        { name: "HTML Full Course 2025", students: 0, revenue: "$0" },
-        { name: "React Native Full Course 2025", students: 0, revenue: "$0" },
-    ]
 
     return (
         <div className='container-fluid'>
@@ -82,29 +74,8 @@ export const Admin = () => {
                                 <h4 className="fw-bold mb-0">All Courses</h4>
                                 <button className="btn btn-dark" onClick={() => setActiveTab('addCourse')}>Create New Course</button>
                             </div>
-                            <table className="table table-bordered">
-                                <thead className="table-light">
-                                    <tr>
-                                        <th>Course</th>
-                                        <th>Students</th>
-                                        <th>Revenue</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {courseList.map((course, index) => (
-                                        <tr key={index}>
-                                            <td>{course.name}</td>
-                                            <td>{course.students}</td>
-                                            <td>{course.revenue}</td>
-                                            <td>
-                                                <button className="btn btn-primary btn-sm me-2">Edit</button>
-                                                <button className="btn btn-danger btn-sm">Delete</button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <CourseList />
+                            
                         </div>
                     )}
 
