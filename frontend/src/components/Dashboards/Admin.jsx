@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import { AddCourse } from '../ManageCourses/AddCourse';
 import { CourseList } from '../ManageCourses/CourseList';
 
@@ -11,6 +13,31 @@ export const Admin = () => {
         localStorage.removeItem("role");
         window.location.href = "/"; // Redirect to login page
     }
+
+    const [courses, setCourses] = useState([]);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const res = await axios.get("http://localhost:7001/api/course/listcourse");
+                setCourses(res.data);
+            } catch (err) {
+                console.error("Error fetching courses:", err);
+            }
+        };
+
+        fetchCourses();
+    }, []);
+
+    const handleDelete = async (id) => {
+        try {
+            await axios.delete(`http://localhost:7001/api/course/deletecourse/${id}`);
+            setCourses((prev) => prev.filter((course) => course._id !== id));
+        } catch (error) {
+            console.error(error);
+            alert("Error deleting course");
+        }
+    };
 
     return (
         <div className='container-fluid'>
@@ -52,18 +79,18 @@ export const Admin = () => {
                         <>
                             <h2 className="fw-bold mb-3">Dashboard Overview</h2>
                             <p>Welcome to the admin dashboard! You can manage courses and users here.
-                            <br />
-                            1. add courses, Delete courses, Update courses
-                            <br />
-                            2. manage instructors
-                            <br />
-                            3. manage students
-                            <br />
-                            4. view all courses, instructors, and students
-                            <br />
-                            5. add instructors to the course
-                            <br />
-                            6. add students to the course
+                                <br />
+                                1. add courses, Delete courses, Update courses
+                                <br />
+                                2. manage instructors
+                                <br />
+                                3. manage students
+                                <br />
+                                4. view all courses, instructors, and students
+                                <br />
+                                5. add instructors to the course
+                                <br />
+                                6. add students to the course
                             </p>
                         </>
                     )}
@@ -74,8 +101,43 @@ export const Admin = () => {
                                 <h4 className="fw-bold mb-0">All Courses</h4>
                                 <button className="btn btn-dark" onClick={() => setActiveTab('addCourse')}>Create New Course</button>
                             </div>
-                            <CourseList />
-                            
+                            {/* Table for quick info */}
+                            <table className="table table-bordered">
+                                <thead className="table-light">
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Students</th>
+                                        <th>Price</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {courses.map((course) => (
+                                        <tr key={course._id}>
+                                            <td>{course.title}</td>
+                                            <td>0</td>
+                                            <td>{course.price}</td>
+                                            <td>
+                                                <button
+                                                    className="btn btn-primary btn-sm me-2">
+                                                    <Link to={`/edit/${course._id}`} className='text-white hover:underline text-decoration-none'>
+                                                        Edit
+                                                    </Link>
+                                                </button>
+                                                <button
+                                                    className="btn btn-danger btn-sm"
+                                                    onClick={() => handleDelete(course._id)}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {/* <CourseList /> */}
+
                         </div>
                     )}
 
@@ -83,11 +145,11 @@ export const Admin = () => {
                         <>
                             <h2 className="fw-bold mb-3">Dashboard Instrcutor</h2>
                             <p>Welcome to Instructors
-                            <br />
-                            1. start Live
-                            <br />
-                            2. schedule Live
-                            <br />
+                                <br />
+                                1. start Live
+                                <br />
+                                2. schedule Live
+                                <br />
                             </p>
                         </>
                     )}
@@ -96,17 +158,17 @@ export const Admin = () => {
                         <>
                             <h2 className="fw-bold mb-3">Dashboard Students</h2>
                             <p>Welcome to Students
-                            <br />
-                            1. view courses
-                            <br />
-                            2. enroll in courses
-                            <br />
-                            3. view enrolled courses
-                            <br />
-                            4. view progress
-                            <br />
-                            5. view certificates
-                            <br />
+                                <br />
+                                1. view courses
+                                <br />
+                                2. enroll in courses
+                                <br />
+                                3. view enrolled courses
+                                <br />
+                                4. view progress
+                                <br />
+                                5. view certificates
+                                <br />
                             </p>
                         </>
                     )}

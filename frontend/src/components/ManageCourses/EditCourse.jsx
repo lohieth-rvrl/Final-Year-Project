@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
-export const AddCourse = () => {
+export const EditCourse = () => {
+  const { courseId } = useParams();
   const [formData, setFormData] = useState({
     title: "",
     subtitle: "",
@@ -15,15 +17,39 @@ export const AddCourse = () => {
     chapters: [
       {
         title: "",
-        lectures: [
-          { title: "", duration: "", url: "", isPreviewFree: false }
-        ]
+        lectures: [{ title: "", duration: "", url: "", isPreviewFree: false }]
       }
     ]
   });
 
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const { data } = await axios.get(`http://localhost:7001/api/course/course/${courseId}`);
+        setFormData({
+          title: data.title || "",
+          subtitle: data.subtitle || "",
+          description: data.description || "",
+          keypoints: data.keypoints ? data.keypoints.join(", ") : "",
+          thumbnail: null, // We don’t set file here; file input is empty by default
+          price: data.price || "",
+          discount: data.discount || "",
+          category: data.category || "",
+          level: data.level || "",
+          chapters: data.chapters && data.chapters.length ? data.chapters : [
+            { title: "", lectures: [{ title: "", duration: "", url: "", isPreviewFree: false }] }
+          ],
+        });
+      } catch (err) {
+        setErrors({ server: "Failed to load course data" });
+      }
+    };
+    fetchCourse();
+  }, [courseId]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -68,12 +94,13 @@ export const AddCourse = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const formDataToSend = new FormData();
 
       Object.entries(formData).forEach(([key, value]) => {
         if (key === "thumbnail") {
-          formDataToSend.append("thumbnail", value);
+          if (value) formDataToSend.append("thumbnail", value);
         } else if (key === "keypoints") {
           formDataToSend.append("keypoints", value);
         } else if (key === "chapters") {
@@ -83,25 +110,25 @@ export const AddCourse = () => {
         }
       });
 
-      const res = await axios.post(
-        "http://localhost:7001/api/course/addcourse",
+      const res = await axios.put(
+        `http://localhost:7001/api/course/editcourse/${courseId}`,
         formDataToSend,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
 
-      setSuccess(res.data.message);
+      setSuccess(res.data.message || "Course updated successfully");
       setErrors({});
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
     } catch (err) {
       setErrors({ server: err.response?.data?.message || "Server error" });
+      setSuccess("");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="container py-4">
-      <h2 className="fw-bold mb-3">Add New Course</h2>
+      <h2 className="fw-bold mb-3">Edit Course</h2>
 
       {success && <div className="alert alert-success">{success}</div>}
       {errors.server && <div className="alert alert-danger">{errors.server}</div>}
@@ -248,10 +275,12 @@ export const AddCourse = () => {
           + Add Chapter
         </button>
 
-        <button type="submit" className="btn btn-primary">
-          Add Course
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? "Updating..." : "Update Course"}
         </button>
       </form>
     </div>
   );
 };
+
+export default EditCourse;
