@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { AddCourse } from '../ManageCourses/AddCourse';
 import { CourseList } from '../ManageCourses/CourseList';
-
+import InstructorLogin from '../Auth/InstructorLogin';
 export const Admin = () => {
     const [activeTab, setActiveTab] = useState('dashboard')
 
@@ -15,6 +15,7 @@ export const Admin = () => {
     }
 
     const [courses, setCourses] = useState([]);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -29,10 +30,33 @@ export const Admin = () => {
         fetchCourses();
     }, []);
 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const res = await axios.get("http://localhost:7001/api/users/users");
+                setUsers(res.data);
+            } catch (err) {
+                console.error("Error fetching courses:", err);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
     const handleDelete = async (id) => {
         try {
             await axios.delete(`http://localhost:7001/api/course/deletecourse/${id}`);
             setCourses((prev) => prev.filter((course) => course._id !== id));
+        } catch (error) {
+            console.error(error);
+            alert("Error deleting course");
+        }
+    };
+
+    const handleDeleteuser = async (id) => {
+        try {
+            await axios.delete(`http://localhost:7001/api/users/delete/${id}`);
+            setUsers(users.filter(user => user._id !== id));
         } catch (error) {
             console.error(error);
             alert("Error deleting course");
@@ -151,6 +175,18 @@ export const Admin = () => {
                                 2. schedule Live
                                 <br />
                             </p>
+                            <ul className="nav flex-column">
+                                <li className="nav-item mb-2">
+                                    <button className={`nav-link btn ${activeTab === 'AddInstructor' ? 'active fw-bold' : ''}`} onClick={() => setActiveTab('AddInstructor')}>
+                                        📊 Add Instructor
+                                    </button>
+                                </li>
+                                <li className="nav-item mb-2">
+                                    <button className={`nav-link btn ${activeTab === 'ListInstructor' ? 'active fw-bold' : ''}`} onClick={() => setActiveTab('ListInstructor')}>
+                                        📚 List Instructor
+                                    </button>
+                                </li>
+                            </ul>
                         </>
                     )}
 
@@ -185,6 +221,52 @@ export const Admin = () => {
                             <h2 className="text-danger">You have been logged out.</h2>
                             <p>Redirecting to login...</p>
                             <button onClick={handleLogout} className='btn btn-danger'>logout</button>
+                        </>
+                    )}
+
+                    {activeTab === 'AddInstructor' && (
+                        <>
+                            <button onClick={() => setActiveTab('instructors')} className='btn btn-secondary'> back</button>
+                            <InstructorLogin />
+                        </>
+                    )}
+                    {activeTab === 'ListInstructor' && (
+                        <>
+                            <button onClick={() => setActiveTab('instructors')} className='btn btn-secondary'> back</button>
+                            <table className="table table-bordered">
+                                <thead className="table-light">
+                                    <tr>
+                                        <th>Role</th>
+                                        <th>Name</th>
+                                        <th>Course</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {users.filter(user => user.role === "instructor").map((user) => (
+                                        <tr key={user._id}>
+                                            <td>{user.role}</td>
+                                            <td>{user.username}</td>
+                                            <td>0</td>
+                                            <td>
+                                                <button
+                                                    className="btn btn-primary btn-sm me-2">
+                                                    <Link to={`/edit/${user._id}`} className='text-white hover:underline text-decoration-none'>
+                                                        Assign
+                                                    </Link>
+                                                </button>
+                                                <button
+                                                    className="btn btn-danger btn-sm"
+                                                    onClick={() => handleDeleteuser(user._id)}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </>
                     )}
                 </div>

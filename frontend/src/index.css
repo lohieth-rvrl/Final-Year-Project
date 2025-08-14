@@ -3,3 +3,19 @@
 * {
     font-family: "Quicksand", sans-serif;
 }
+
+/* .profile-dropdown {
+  position: relative;
+}
+
+.profile-dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);  */
+  /* pushes dropdown below navbar */
+  /* right: 0;
+}
+
+.profile-dropdown:hover .dropdown-menu {
+  display: block;
+} */
