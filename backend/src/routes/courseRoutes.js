@@ -10,4 +10,5 @@ router.delete("/deletecourse/:id",courseController.deleteCourse);
 router.put("/editcourse/:id", upload.single("thumbnail"), courseController.editCourse);
 router.get("/course/:id", courseController.getCourseById);
 
+
 export default router;
