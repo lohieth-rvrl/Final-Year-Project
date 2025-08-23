@@ -1,0 +1,25 @@
+#frontend
+
+@popperjs/core
+axios
+bootstrap
+humanize-duration
+quill
+rc-progress
+react
+react-dom
+react-icons
+react-router-dom
+react-simple-star-rating
+react-youtube
+uniqid
+
+
+# backend
+
+bcryptjs
+cors
+dotenv
+express
+jsonwebtoken
+mongoose
