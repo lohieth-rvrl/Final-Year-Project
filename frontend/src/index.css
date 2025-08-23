@@ -1,21 +1,15 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap'); */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Quicksand:wght@583&display=swap');
-* {
+/* @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Quicksand:wght@583&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap');
+
+/* * {
     font-family: "Quicksand", sans-serif;
-}
-
-/* .profile-dropdown {
-  position: relative;
-}
-
-.profile-dropdown .dropdown-menu {
-  display: none;
-  position: absolute;
-  top: calc(100% + 8px);  */
-  /* pushes dropdown below navbar */
-  /* right: 0;
-}
-
-.profile-dropdown:hover .dropdown-menu {
-  display: block;
 } */
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Poppins', sans-serif;
+}

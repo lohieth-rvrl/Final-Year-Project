@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import {CourseList} from "./CourseList";
+import axios from "axios";
 
 const ViewCourse = () => {
     const role = localStorage.getItem("role");
     const { courseId } = useParams();
     const [course, setCourse] = useState(null);
+    const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,6 +20,19 @@ const ViewCourse = () => {
             })
             .catch(() => setLoading(false));
     }, [courseId]);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const res = await axios.get("http://localhost:7001/api/course/listcourse");
+                setCourses(res.data);
+                setFilteredCourses(res.data);
+            } catch (err) {
+                console.error("Error fetching courses:", err);
+            }
+        };
+        fetchCourses();
+    }, []);
 
     if (loading) return <div>Loading course...</div>;
     if (!course) return <p>No course found.</p>;
@@ -101,8 +117,15 @@ const ViewCourse = () => {
                         <p><h4><strong>Course Description:</strong></h4>
                             {course.description}
                         </p>
+                        <div className="related">
+                            <h4 className="fw-bold">Related course</h4>
+                            {courses.map((cou) => (
+                                cou.category === course.category ? (<p>{cou.title}</p>) : null
+                            ))}
+                            {/* <CourseList /> */}
+                        </div>
                     </div>
-                    <div className="col-md-5 mt-3 d-flex align-items-center justify-content-center">
+                    <div className="col-md-5 mt-3 d-flex align-items-start justify-content-center">
                         <div className="col-md-9 card">
                             {course.thumbnail && (
                                 <img
@@ -152,11 +175,6 @@ const ViewCourse = () => {
 
                         </div>
                     </div>
-                    <div className="col-md-7 mt-3">
-
-
-                    </div>
-
                 </div>
             </div>
         </div>

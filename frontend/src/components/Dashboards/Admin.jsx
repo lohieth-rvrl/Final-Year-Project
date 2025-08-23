@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { AddCourse } from '../ManageCourses/AddCourse';
 import { CourseList } from '../ManageCourses/CourseList';
 import InstructorLogin from '../Auth/InstructorLogin';
+import CourseModules from "../ManageCourses/CourseModules ";
 export const Admin = () => {
     const [activeTab, setActiveTab] = useState('dashboard')
 
@@ -116,6 +117,7 @@ export const Admin = () => {
                                 <br />
                                 6. add students to the course
                             </p>
+                            <CourseModules />
                         </>
                     )}
 
