@@ -11,15 +11,17 @@ dotenv.config();
 // database
 connectDB();
 
-// CORS
 const app = express();
-app.use(cors({
-    origin: 'http://localhost:5173', // Adjust this to your frontend URL
-    credentials: true,
-}));
+app.use(express.json()); 
 
-// middleware
-app.use(json());
+// Better: add urlencoded support in case you need form-data parsing without files
+app.use(express.urlencoded({ extended: true }));
+
+// CORS – if you’ll deploy, better open up env-based config:
+app.use(cors({
+  origin: process.env.CLIENT_URL || "http://localhost:5173",
+  credentials: true,
+}));
 
 
 // routes

@@ -19,6 +19,7 @@ export const Login = () => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         localStorage.setItem("role", response.data.user.role);
+        localStorage.setItem("username", response.data.user.username);
         navigate("/");
         window.location.reload();
       }
