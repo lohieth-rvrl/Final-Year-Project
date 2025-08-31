@@ -4,6 +4,7 @@ import connectDB from './config/dbConnect.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import courseRoutes from './routes/courseRoutes.js'
+import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import cors from 'cors';
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/course', courseRoutes);
 app.use("/uploads", express.static("uploads"));
+app.use("/api/enrollments", enrollmentRoutes);
 
 // server
 const PORT = process.env.PORT || 7000;

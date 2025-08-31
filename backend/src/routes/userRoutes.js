@@ -60,4 +60,6 @@ router.get("/instructors", async (req, res) => {
   }
 });
 
+router.get("/me", verifyToken, users.getCurrentUser);
+
 export default router;

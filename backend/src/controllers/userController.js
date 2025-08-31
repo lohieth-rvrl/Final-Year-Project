@@ -58,9 +58,22 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const getCurrentUser = async (req, res) => {
+  try {
+    // Assuming user is attached to req via auth middleware
+    const user = req.user;
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export default {
   getAllUsers,
   getUserById,
   getInstructors,
   deleteUser,
+  getCurrentUser,
 };
