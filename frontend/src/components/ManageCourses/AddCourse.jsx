@@ -1,23 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-
+import {UserContext} from "../../context/UserContext.jsx";
 
 export const AddCourse = () => {
   const [step, setStep] = useState(1);
-  const [instructors, setInstructors] = useState([]);
+  // const [instructors, setInstructors] = useState([]);
+    const { instructors } = useContext(UserContext);
   const [selectedInstructor, setSelectedInstructor] = useState("");
-
-  useEffect(() => {
-    const fetchInstructors = async () => {
-      try {
-        const res = await axios.get("http://localhost:7001/api/users/instructors");
-        setInstructors(res.data);
-      } catch (err) {
-        console.error("Error fetching instructors", err);
-      }
-    };
-    fetchInstructors();
-  }, []);
 
   const [formData, setFormData] = useState({
     thumbnail: "",

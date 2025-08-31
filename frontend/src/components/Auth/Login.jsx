@@ -1,12 +1,14 @@
-import React from 'react'
-import axios from 'axios'
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../../context/UserContext";
+
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useUser(); // use login method from context
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,16 +17,22 @@ export const Login = () => {
         username,
         password,
       });
+
       if (response.data.token) {
+        // Store token only
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        localStorage.setItem("role", response.data.user.role);
-        localStorage.setItem("username", response.data.user.username);
+
+        // Set axios header
+        axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+
+        // Trigger context login (fetches user from backend)
+        login({ token: response.data.token });
+
+        // Redirect to home
         navigate("/");
-        window.location.reload();
       }
     } catch (err) {
-      setError(err.response ? err.response.data.message : "Something went wrong");
+      setError(err.response?.data?.message || "Something went wrong");
     }
   };
 
@@ -43,6 +51,7 @@ export const Login = () => {
                 placeholder="Enter Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                required
               />
             </div>
             <div className="mb-3">
@@ -53,6 +62,7 @@ export const Login = () => {
                 placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
             <button type="submit" className="btn btn-dark w-100">Login</button>
@@ -64,5 +74,5 @@ export const Login = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
